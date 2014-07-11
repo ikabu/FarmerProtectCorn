@@ -250,7 +250,7 @@ function bird() {
 
 function albanese() {
 	this.sprite = new Image();
-	this.sprite.src = "./Assets/albanese.png";
+	this.sprite.src = "./Assets/albanese_small.png";
 	this.w = 1220;
 	this.h = 1593;
 

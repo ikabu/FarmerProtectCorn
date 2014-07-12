@@ -7,6 +7,10 @@ const TITLETIME = 4000;
 var canv = null;
 var context = null;
 
+// Width and height of our background.  Will scale if screen smaller
+var width = 1024;
+var height = 683;
+
 var background = new Image();
 var target = new Image();
 var targetTorn = new Image();
@@ -17,13 +21,14 @@ var sfx_gun = null;
 var sfx_ting = null;
 var sfx_success = null;
 
-var width = 1024;
-var height = 683;
 
 var crow = new bird();
 var albo = new albanese();
 
+// Describes how gun should be handled.  Can be bird, target or something else
 var shot = "bird";
+
+// Transparency used when fading in corn
 var alpha = 0;
 
 window.onload = setUp;
@@ -102,13 +107,14 @@ function switchbackAudio(level) {
 	}
 }
 function titles(big, small, time) {
-	sfx_gun.src = null;
+	//Disable gun sound
+	shot = "none";
+
 	var intervalID = setInterval(function() {titlesDraw(big, small);}, 200);
 	setTimeout(function() {clearInterval(intervalID);}, time);
 }
 
 function titlesDraw(big, small) {
-	console.log(big);
 	context.fillStyle = "#000000";
 	context.fillRect(0, 0, width, height);
 	
@@ -125,7 +131,7 @@ function titlesDraw(big, small) {
 function level1() {
 	//Play soundtrack
 	backAudio.play();
-	sfx_gun.src = "./Assets/shotgun.mp3";
+		shot = "bird"; //Re-enable gun sounds
 
 	//Generate crow to draw to screen
 	crow.generate();
@@ -157,7 +163,7 @@ function level2() {
 
 	//Play soundtrack
 	backAudio.play();
-	sfx_gun.src = "./Assets/shotgun.mp3";
+	shot = "bird";
 	
 	var intervalID = setInterval(function() {level2and3Draw();}, 1000 / FPS);
 	setTimeout(function() {clearInterval(intervalID);}, LEVEL2TIME);
@@ -166,7 +172,7 @@ function level2() {
 function level3() {
 	//Play soundtrack
 	backAudio.play();
-	sfx_gun.src = "./Assets/shotgun.mp3";
+	shot = "bird";
 	
 	albo.xMultiple = 3.178;
 	albo.yMultiple = 1.929;
@@ -204,7 +210,6 @@ function setUpEnd() {
 }
 
 function setUpEndDraw() {
-	console.log("target");
 	context.drawImage(target, (width-200)/2, (height-200)/2);
 }
 
@@ -342,8 +347,9 @@ function handleMouseDown(event) {
 			}
 		} else {
 			sfx_gun.play();
-		}	
+		} 	
+	} else {  //Non-game moments don't want sound played
+		return;
 	}
-
 }
 

@@ -58,33 +58,33 @@ function setUp() {
 	targetTorn.src = "./Assets/target_torn_small.png";
 	corn.src = "./Assets/corn_small.png";
 
-	titles("Farmer: Protect Your Corn", "(Click to shoot)");
+	titles("Farmer: Protect Your Corn", "(Click to shoot)", TITLETIME);
 
 	switchbackAudio(1);
 
 	var time = TITLETIME;
 
-	// setTimeout(level1, time);
+	setTimeout(level1, time);
 
-	// time += LEVEL1TIME + 34; // 34 accounts for one extra screen refresh at 30fps
+	time += LEVEL1TIME + 34; // 34 allows one extra screen refresh at 30fps
 
-	// setTimeout(function () {titles("level 2", "");}, time);
-	// setTimeout(function () {switchbackAudio(2);}, time);
+	setTimeout(function () {titles("level 2", "", TITLETIME);}, time);
+	setTimeout(function () {switchbackAudio(2);}, time);
 
-	// time += TITLETIME;
+	time += TITLETIME;
 
-	// setTimeout(level2, time);
+	setTimeout(level2, time);
 	
-	// time += LEVEL2TIME + 34;
+	time += LEVEL2TIME + 34;
 
-	// setTimeout(function () {titles("the end", "");}, time);
-	// setTimeout(function () {switchbackAudio(3);}, time);
+	setTimeout(function () {titles("the end", "", TITLETIME);}, time);
+	setTimeout(function () {switchbackAudio(3);}, time);
 
-	// time += TITLETIME;
+	time += TITLETIME;
 
-	// setTimeout(level3, time);
+	setTimeout(level3, time);
 
-	// time += LEVEL3TIME + 34;
+	time += LEVEL3TIME + 34;
 
 	setTimeout(function () {switchbackAudio(4);}, time);
 	setTimeout(setUpEnd, time);
@@ -101,8 +101,14 @@ function switchbackAudio(level) {
 		backAudio.src = "./Assets/wantyouback_short.mp3";
 	}
 }
+function titles(big, small, time) {
+	sfx_gun.src = null;
+	var intervalID = setInterval(function() {titlesDraw(big, small);}, 200);
+	setTimeout(function() {clearInterval(intervalID);}, time);
+}
 
-function titles(big, small) {
+function titlesDraw(big, small) {
+	console.log(big);
 	context.fillStyle = "#000000";
 	context.fillRect(0, 0, width, height);
 	
@@ -190,18 +196,30 @@ function level2and3Draw() {
 
 function setUpEnd() {
 	shot = "target";
-	context.drawImage(target, (width-200)/2, (height-200)/2);
 	sfx_success.play();
+
+	// Draw target multiple times to be on safe side (fuck you Safari)
+	var intervalID = setInterval(setUpEndDraw, 1000 / FPS);
+	setTimeout(function() {clearInterval(intervalID);}, 1000);
+}
+
+function setUpEndDraw() {
+	console.log("target");
+	context.drawImage(target, (width-200)/2, (height-200)/2);
 }
 
 function end() {
+	// Draw torn target again just in case
+	context.drawImage(targetTorn, (width-200)/2, (height-200)/2);
+
 	var intervalID = setInterval(fadeCorn, 1000 / FPS);
 	setTimeout(function() {clearInterval(intervalID);}, 2000);
 	backAudio.src = "./Assets/wantyouback_short.mp3";
 	backAudio.play();
-	setTimeout(function() {context.globalAlpha = 1; titles("Treasure the ones you love", "Also, Satyros meeting Monday 7pm HAG040");}, 8500);
-	setTimeout(function() {titles("","");}, 15500)
-
+	setTimeout(function() {context.globalAlpha = 1; 
+		titles("Treasure the ones you love", 
+			"Also, Satyros meeting Monday 7pm HAG040", 7000);}, 8500);
+	setTimeout(function() {titles("","", 2000);}, 15500)
 }
 
 function fadeCorn() {
@@ -292,8 +310,10 @@ function handleMouseDown(event) {
 		x = event.pageX;
 		y = event.pageY;
 	} else {
-		x = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-		y = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+		x = event.clientX + document.body.scrollLeft + 
+			document.documentElement.scrollLeft;
+		y = event.clientY + document.body.scrollTop + 
+			document.documentElement.scrollTop;
 	}
 
 	x -= canv.offsetLeft;

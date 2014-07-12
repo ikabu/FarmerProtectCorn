@@ -64,27 +64,27 @@ function setUp() {
 
 	var time = TITLETIME;
 
-	setTimeout(level1, time);
+	// setTimeout(level1, time);
 
-	time += LEVEL1TIME + 34; // 34 accounts for one extra screen refresh at 30fps
+	// time += LEVEL1TIME + 34; // 34 accounts for one extra screen refresh at 30fps
 
-	setTimeout(function () {titles("level 2", "");}, time);
-	setTimeout(function () {switchbackAudio(2);}, time);
+	// setTimeout(function () {titles("level 2", "");}, time);
+	// setTimeout(function () {switchbackAudio(2);}, time);
 
-	time += TITLETIME;
+	// time += TITLETIME;
 
-	setTimeout(level2, time);
+	// setTimeout(level2, time);
 	
-	time += LEVEL2TIME + 34;
+	// time += LEVEL2TIME + 34;
 
-	setTimeout(function () {titles("the end", "");}, time);
-	setTimeout(function () {switchbackAudio(3);}, time);
+	// setTimeout(function () {titles("the end", "");}, time);
+	// setTimeout(function () {switchbackAudio(3);}, time);
 
-	time += TITLETIME;
+	// time += TITLETIME;
 
-	setTimeout(level3, time);
+	// setTimeout(level3, time);
 
-	time += LEVEL3TIME + 34;
+	// time += LEVEL3TIME + 34;
 
 	setTimeout(function () {switchbackAudio(4);}, time);
 	setTimeout(setUpEnd, time);
@@ -103,7 +103,6 @@ function switchbackAudio(level) {
 }
 
 function titles(big, small) {
-	sfx_gun.src = null;
 	context.fillStyle = "#000000";
 	context.fillRect(0, 0, width, height);
 	
@@ -151,7 +150,6 @@ function level2() {
 	crow.xpos = -100;
 
 	//Play soundtrack
-	// backAudio.src = "./Assets/level2.mp3";
 	backAudio.play();
 	sfx_gun.src = "./Assets/shotgun.mp3";
 	
@@ -161,19 +159,11 @@ function level2() {
 
 function level3() {
 	//Play soundtrack
-	// backAudio.src = "./Assets/level3.mp3";
 	backAudio.play();
 	sfx_gun.src = "./Assets/shotgun.mp3";
 	
-	// albo.xMultiple = 2.9756;
-	// albo.yMultiple = 1.937956;
 	albo.xMultiple = 3.178;
 	albo.yMultiple = 1.929;
-
-	// console.log(albo.xpos + " / " + albo.ypos);
-	// albo.xpos += 150;
-	// albo.ypos -=50;
-	// console.log(albo.xpos + " / " + albo.ypos);
 	albo.rate = 1.0030;
 	albo.currentscale *= 1.2;
 
@@ -183,7 +173,6 @@ function level3() {
 }
 
 function level2and3Draw() {
-
 	//Draw background
 	context.clearRect(0, 0, width, height);
 	context.save();
@@ -210,13 +199,14 @@ function end() {
 	setTimeout(function() {clearInterval(intervalID);}, 2000);
 	backAudio.src = "./Assets/wantyouback_short.mp3";
 	backAudio.play();
-	setTimeout(function() {titles("Treasure the ones you love", "Also, Satyros meeting Monday 7pm HAG040");}, 8500);
+	setTimeout(function() {context.globalAlpha = 1; titles("Treasure the ones you love", "Also, Satyros meeting Monday 7pm HAG040");}, 8500);
 	setTimeout(function() {titles("","");}, 15500)
 
 }
 
 function fadeCorn() {
-	alpha += 0.01665;
+	alpha += 0.01667;
+	
 	context.globalAlpha = alpha;
 	context.drawImage(corn, (width-100)/2, (height-100)/2);
 }
@@ -313,17 +303,19 @@ function handleMouseDown(event) {
 	if (shot == "target") {
 		sfx_gun.play();
 
-		if (Math.abs(event.clientX - (width / 2) < 100)) {
-			if (Math.abs(event.clientY - (height / 2) < 100)) {
+		if (Math.abs(x - (width / 2)) < 90) {
+			if (Math.abs(y - (height / 2)) < 90) {
 				context.drawImage(targetTorn, (width-200)/2, (height-200)/2);
 				setTimeout(end, 750);
+
+				//Disable future shooting
+				shot = "end";
 			}
 		}
-	} else {
+	} else if (shot == "bird") {
 		// If we're close to the bird it's dead
-		if (Math.abs(event.clientX - crow.xpos) < 45) {
-			if (Math.abs(event.clientY - crow.ypos) < 45) {
-				console.log(event.clientX - crow.xpos)
+		if (Math.abs(x - crow.xpos) < 45) {
+			if (Math.abs(y - crow.ypos) < 45) {
 				sfx_ting.play();
 				crow.generate();
 				// TODO: Add score?

@@ -125,7 +125,7 @@ function titlesDraw(big, small) {
 	context.fillText(big, width/2, height/2);
 	context.font = "30px Courier New";
 	context.textAlign = "center";
-	context.fillText(small, width/2 + 30, height/2 + 30);
+	context.fillText(small, width/2, height/2 + 30);
 }
 
 function level1() {
@@ -343,7 +343,6 @@ function handleMouseDown(event) {
 			if (Math.abs(y - crow.ypos) < 45) {
 				sfx_ting.play();
 				crow.generate();
-				// TODO: Add score?
 			}
 		} else {
 			sfx_gun.play();
